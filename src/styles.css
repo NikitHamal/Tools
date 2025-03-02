@@ -1,0 +1,146 @@
+/* Main Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f9f9f9;
+}
+
+.app-title {
+  font-weight: 600;
+  color: #3f51b5;
+  margin-bottom: 2rem;
+  position: relative;
+  display: inline-block;
+}
+
+.app-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
+  height: 3px;
+  background-color: #f50057;
+  border-radius: 3px;
+}
+
+/* Form Styles */
+.url-form {
+  margin-bottom: 2rem;
+  animation: fadeIn 0.5s ease-in;
+}
+
+.url-input {
+  border-radius: 8px;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+.submit-button {
+  font-weight: 500;
+  text-transform: none;
+  border-radius: 8px;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 4px 6px rgba(63, 81, 181, 0.2);
+  transition: all 0.3s ease;
+}
+
+.submit-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(63, 81, 181, 0.3);
+}
+
+/* Video and Transcript Styles */
+.player-container {
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.5s ease-out;
+}
+
+.transcript-container {
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+  animation: slideIn 0.5s ease-out;
+}
+
+.transcript-title {
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.transcript-line {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.transcript-text {
+  line-height: 1.6;
+}
+
+.transcript-time {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.active-line {
+  background-color: rgba(63, 81, 181, 0.15);
+  box-shadow: 0 2px 4px rgba(63, 81, 181, 0.1);
+}
+
+.active-text {
+  color: #3f51b5;
+}
+
+/* Loading State */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  color: #666;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+  
+  .app-title {
+    font-size: 1.75rem;
+  }
+  
+  .transcript-container {
+    max-height: 250px;
+  }
+} 
