@@ -10,7 +10,9 @@ A modern Material UI application that transcribes YouTube videos directly from U
 - Click on any caption to jump to that part of the video
 - Copy the full transcript to clipboard
 - Clean, responsive Material UI design with Poppins font
-- Works completely in the browser with server-side transcript extraction
+- **No paid APIs required** - works with 100% free methods
+- Multiple transcription approaches for different situations
+- Shows alternative transcriptions when available
 
 ## Installation
 
@@ -31,14 +33,28 @@ This will start both the React frontend and the Express backend server.
 
 ## How It Works
 
-The application:
+The application uses a multi-layered approach to get the most accurate transcripts:
 
 1. Extracts the video ID from the YouTube URL
-2. The backend fetches the YouTube page and extracts the captions track URL
-3. The backend then fetches the captions in XML format and parses them
-4. The frontend displays the video using YouTube iframe API
-5. The transcript is displayed with the current caption highlighted
-6. As the video plays, the transcript scrolls to keep the current caption visible
+2. First attempts to use YouTube's built-in captions (fastest method)
+3. For missing captions, tries alternative free methods:
+   - YouTube Data API v3 (optional, requires your own free API key)
+   - Free third-party transcript APIs
+   - OCR for videos with burned-in subtitles (experimental)
+4. Post-processes transcript text to fix common transcription errors
+5. Shows alternative transcriptions when sources disagree
+6. Displays the transcript with synchronized highlighting
+
+## Transcription Methods
+
+- **Auto-detect**: Automatically tries all available methods in sequence
+- **YouTube API**: Uses YouTube Data API to fetch captions (requires your own free API key)
+- **OCR** (experimental): Attempts to extract text from videos with hardcoded subtitles
+
+## Quality Levels
+
+- **Standard**: Basic transcription with minimal processing
+- **Enhanced**: Improved transcription with grammar and formatting corrections
 
 ## Technologies Used
 
@@ -46,6 +62,7 @@ The application:
 - Material UI
 - Express.js
 - YouTube IFrame API
+- Natural language processing
 - CSS Animations
 
 ## Limitations

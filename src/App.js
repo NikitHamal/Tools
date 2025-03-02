@@ -6,6 +6,14 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import TextField from '@mui/material/TextField';
 import TranscribeForm from './components/TranscribeForm';
 import VideoPlayer from './components/VideoPlayer';
 import Transcript from './components/Transcript';
@@ -58,6 +66,10 @@ function App() {
   const [currentTime, setCurrentTime] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [transcriptionQuality, setTranscriptionQuality] = useState('standard');
+  const [transcriptionMethod, setTranscriptionMethod] = useState('auto');
+  const [youtubeApiKey, setYoutubeApiKey] = useState('');
+  const [showApiKeyField, setShowApiKeyField] = useState(false);
 
   const handleSubmit = (url) => {
     setVideoUrl(url);
@@ -84,11 +96,19 @@ function App() {
       setLoading(true);
       setTranscript([]);
       
-      const response = await fetch(`/api/transcript?videoId=${videoId}`);
+      // Build API URL with all parameters
+      let apiUrl = `/api/transcript?videoId=${videoId}&quality=${transcriptionQuality}&method=${transcriptionMethod}`;
+      
+      // Add YouTube API key if provided
+      if (youtubeApiKey) {
+        apiUrl += `&youtubeApiKey=${encodeURIComponent(youtubeApiKey)}`;
+      }
+      
+      const response = await fetch(apiUrl);
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to fetch transcript');
+        throw new Error(errorData.userMessage || errorData.error || 'Failed to fetch transcript');
       }
       
       const data = await response.json();
@@ -110,6 +130,20 @@ function App() {
     setCurrentTime(time);
   };
 
+  const handleQualityChange = (event) => {
+    setTranscriptionQuality(event.target.value);
+  };
+
+  const handleMethodChange = (event) => {
+    const method = event.target.value;
+    setTranscriptionMethod(method);
+    setShowApiKeyField(method === 'api');
+  };
+
+  const handleApiKeyChange = (event) => {
+    setYoutubeApiKey(event.target.value);
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
@@ -118,6 +152,62 @@ function App() {
           <Typography variant="h3" component="h1" gutterBottom className="app-title">
             YouTube Transcription
           </Typography>
+          
+          <Box sx={{ mb: 4, display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+            <FormControl sx={{ minWidth: 150 }}>
+              <InputLabel id="quality-label">Quality</InputLabel>
+              <Select
+                labelId="quality-label"
+                value={transcriptionQuality}
+                label="Quality"
+                onChange={handleQualityChange}
+                size="small"
+              >
+                <MenuItem value="standard">Standard</MenuItem>
+                <MenuItem value="high">Enhanced</MenuItem>
+              </Select>
+            </FormControl>
+            
+            <FormControl>
+              <RadioGroup
+                row
+                value={transcriptionMethod}
+                onChange={handleMethodChange}
+              >
+                <FormControlLabel 
+                  value="auto" 
+                  control={<Radio size="small" />} 
+                  label="Auto-detect" 
+                />
+                <FormControlLabel 
+                  value="api" 
+                  control={<Radio size="small" />} 
+                  label="YouTube API (key required)" 
+                />
+                <FormControlLabel 
+                  value="ocr" 
+                  control={<Radio size="small" />} 
+                  label="OCR (experimental)" 
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+          
+          {showApiKeyField && (
+            <Box sx={{ mb: 3 }}>
+              <TextField
+                label="YouTube API Key"
+                variant="outlined"
+                size="small"
+                fullWidth
+                value={youtubeApiKey}
+                onChange={handleApiKeyChange}
+                placeholder="Enter your YouTube Data API v3 key"
+                helperText="Get a key from Google Cloud Console"
+              />
+            </Box>
+          )}
+          
           <TranscribeForm onSubmit={handleSubmit} isLoading={loading} />
           
           {error && (
